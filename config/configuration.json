@@ -164,5 +164,6 @@
         "rules":["highway=primary","highway=primary_link","highway=secondary","highway=secondary_link"]
       }
     }
-  }
+  },
+  "MultiFeatureRoundaboutCheck": {}
 }
