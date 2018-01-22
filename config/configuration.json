@@ -165,5 +165,12 @@
       }
     }
   },
-  "MultiFeatureRoundaboutCheck": {}
+  "MultiFeatureRoundaboutCheck": {
+    "challenge":{
+      "description": "Task contains roundabouts created as multiple OSM Ways",
+      "blurb": "Multi-featured roundabouts",
+      "instruction": "Open your favorite editor and connect each roundabout Way",
+      "difficulty": "EASY"
+    }
+  }
 }

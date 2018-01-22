@@ -1,6 +1,7 @@
 package org.openstreetmap.atlas.checks.validation;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.openstreetmap.atlas.checks.base.BaseCheck;
 import org.openstreetmap.atlas.checks.flag.CheckFlag;
@@ -11,8 +12,9 @@ import org.openstreetmap.atlas.tags.annotations.validation.Validators;
 import org.openstreetmap.atlas.utilities.configuration.Configuration;
 
 /**
- * This checks flags multi-featured roundabouts. According to OSM Wiki, each round about should be exactly one feature (OSM Way).
- * We can create the WrongWayRoundaboutCheck based on this exact principle.
+ * This checks flags multi-featured roundabouts. According to OSM Wiki, each round
+ * about should be exactly one feature (OSM Way). We can create the WrongWayRoundaboutCheck
+ * based on this principle.
  *
  * @author danielbaah
  */
@@ -70,13 +72,14 @@ public class MultiFeatureRoundaboutCheck extends BaseCheck {
         final Edge edge = (Edge) object;
         // array list of osm unique identifiers
         final Set<AtlasObject> roundaboutEdges = new HashSet<>();
+        final List<Long> osmIds = new ArrayList<>();
 
         // loop through connected edges with junction=roundabout tags
-        stitchRoundaboutEdges(edge, roundaboutEdges);
+        stitchRoundaboutEdges(edge, roundaboutEdges, osmIds);
 
         // Rule: If edges with junction=roundabout tag have the same id, do not flag.
         // This indicates a one feature roundabout.
-        if (roundaboutEdges.size() == 0) {
+        if (roundaboutEdges.size() <= 1 || isSingleFeature(Long.toString(edge.getOsmIdentifier()), osmIds)) {
             return Optional.empty();
         } else {
             // mark as flagged
@@ -90,14 +93,16 @@ public class MultiFeatureRoundaboutCheck extends BaseCheck {
         }
 
     /**
-     * Recursively loop through connected edges & append osmIds to our list of edges with junction=roundabout
+     * Recursively loop through connected edges & append osmIds to
+     * our list of edges with junction=roundabout
+     *
      * @param edge
      *      current ({@link Edge}) {@link AtlasObject}
      * @param roundaboutEdges
      *      list of osmIds in single roundabout
      */
     //TODO find a better name for this
-    private void stitchRoundaboutEdges(Edge edge, Set<AtlasObject> roundaboutEdges) {
+    private void stitchRoundaboutEdges(Edge edge, Set<AtlasObject> roundaboutEdges, List<Long> osmIds) {
         Iterator<Edge> r = edge.connectedEdges().iterator();
 
         // iterate through connectedEdges
@@ -110,21 +115,48 @@ public class MultiFeatureRoundaboutCheck extends BaseCheck {
             if (JunctionTag.isRoundabout(connectedEdge))
             {
                 // make sure our list doesn't already contain the id
-                if (!roundaboutEdges.contains(connectedEdge)
+                if (!osmIds.contains(uniqueId)
                         // or the AtlasObject id
                         && uniqueId != edge.getIdentifier()
                         // this flag removes duplicate challenges
-                        && !this.isFlagged(connectedEdge.getIdentifier()))
+                        && !this.isFlagged(uniqueId))
                 {
                     // mark as flagged
-                    this.markAsFlagged(connectedEdge.getIdentifier());
+                    this.markAsFlagged(uniqueId);
                     // add to list of roundabout unique ids
                     roundaboutEdges.add(connectedEdge);
+                    osmIds.add(uniqueId);
                     // check for more edges
-                    stitchRoundaboutEdges(connectedEdge, roundaboutEdges);
+                    stitchRoundaboutEdges(connectedEdge, roundaboutEdges, osmIds);
                 }
             }
         }
 
+    }
+
+    /***
+     * Analyze List of roundabout ids. If all List values contain the full OsmIdentifier value,
+     * the roundabout is one Feature (OSM way).
+     *
+     * For example, OSM Way id: 1270065 can be multiple Edges as [127006500001, 127006500002, 127006500003, 127006500004]
+     * Our helper function stitchRoundaboutEdges will create a Roundabout, not knowing this is a single Way.
+     * This function removes these roundabouts from our List of roundaboutEdgeIds.
+     *
+     * @param osmId
+     *          the {@link AtlasObject}'s osmId
+     * @param roundaboutEdgeIds
+     *          the List of unique roundabout Ids
+     * @return {@code true} if roundabout is a single feature, otherwise {@code false}
+     *
+     */
+    private boolean isSingleFeature(String osmId, List<Long> roundaboutEdgeIds){
+        List matches = roundaboutEdgeIds
+                .stream()
+                // returns true is roundabout Id contains full osmId value
+                .filter(id -> Long.toString(id).contains(osmId))
+                .collect(Collectors.toList());
+
+        // if each value passes our test, this roundabout is a single feature
+        return matches.size() == roundaboutEdgeIds.size();
     }
 }
