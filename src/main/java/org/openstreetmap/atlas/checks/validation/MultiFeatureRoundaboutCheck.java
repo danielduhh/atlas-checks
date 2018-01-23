@@ -42,7 +42,7 @@ public class MultiFeatureRoundaboutCheck extends BaseCheck {
     }
 
     /**
-     * This function will validate if the supplied atlas object is valid for the check.
+     * This function will validate if the supplied atlas object is a roundabout or not.
      *
      * @param object the atlas object supplied by the Atlas-Checks framework for evaluation
      * @return {@code true} if this object should be checked
@@ -50,9 +50,7 @@ public class MultiFeatureRoundaboutCheck extends BaseCheck {
     @Override
     public boolean validCheckForObject(final AtlasObject object) {
 
-        final Optional<HighwayTag> highwayTag = Validators.from(HighwayTag.class, object);
-
-        // by default we will assume all objects as valid
+        // object must be an ed
         return object instanceof Edge
                 // check if already marked flagged
                 && !this.isFlagged(object.getIdentifier())
@@ -71,7 +69,7 @@ public class MultiFeatureRoundaboutCheck extends BaseCheck {
     {
         final Edge edge = (Edge) object;
         // array list of osm unique identifiers
-        final Set<AtlasObject> roundaboutEdges = new HashSet<>();
+        final Set<Edge> roundaboutEdges = new HashSet<>();
         final List<Long> osmIds = new ArrayList<>();
 
         // loop through connected edges with junction=roundabout tags
@@ -102,7 +100,7 @@ public class MultiFeatureRoundaboutCheck extends BaseCheck {
      *      list of osmIds in single roundabout
      */
     //TODO find a better name for this
-    private void stitchRoundaboutEdges(Edge edge, Set<AtlasObject> roundaboutEdges, List<Long> osmIds) {
+    private void stitchRoundaboutEdges(Edge edge, Set<Edge> roundaboutEdges, List<Long> osmIds) {
         Iterator<Edge> r = edge.connectedEdges().iterator();
 
         // iterate through connectedEdges
