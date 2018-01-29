@@ -89,7 +89,7 @@ If our roundaboutEdges Collection has one or less Edges, we can assume this roun
         }
 ```
 
-It's important to note that I use the [`getIdentifier()`](https://github.com/osmlab/atlas/blob/dev/src/main/java/org/openstreetmap/atlas/geography/atlas/items/AtlasObject.java#L26) function to create a unique indentifier for each Edge. I came across specific cases where [getOsmIdentifier()](https://github.com/osmlab/atlas/blob/dev/src/main/java/org/openstreetmap/atlas/geography/atlas/items/AtlasEntity.java#L109) would return duplicate ids for ajoining Edges. For example, Edges 13092706600001,13092706600002, & 13092706600003 each returned 130927066 as their OSM identifer. I created a simple helper function, `isSingleFeature(String osmId, List<Long> edgeIds)` that compares our Edge's osmId w/ the list egeIds. 
+It's important to note that I use the [`getIdentifier()`](https://github.com/osmlab/atlas/blob/dev/src/main/java/org/openstreetmap/atlas/geography/atlas/items/AtlasObject.java#L26) function to store unique indentifiers for each Edge. Because of [Way Sectioning](https://github.com/osmlab/atlas#way-sectioning), we'll come across Edges with the same OSM Identifier. For example, Edges 13092706600001,13092706600002, & 13092706600003 share 130927066 as their OSM identifer. I created a simple helper function, `isSingleFeature(String osmId, List<Long> edgeIds)` that compares our Edge's OSM identifier w/ the list's unique identifiers generated above. 
 
 ```java
     private boolean isSingleFeature(String osmId, List<Long> edgeIds){

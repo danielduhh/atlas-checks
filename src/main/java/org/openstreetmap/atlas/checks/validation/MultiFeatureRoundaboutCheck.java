@@ -22,8 +22,9 @@ public class MultiFeatureRoundaboutCheck extends BaseCheck {
 
     // TODO You can use serialver to regenerate the serial UID.
     private static final long serialVersionUID = 1L;
+    public static final String MULTIFEATURE_INSTRUCTIONS = "This is a multi-feature roundabout. Merge roundabout edges to create one feature (OSM Way).";
     private static final List<String> FALLBACK_INSTRUCTIONS = Arrays
-            .asList("This is a multi-feature roundabout. Merge roundabout edges to create one feature (OSM Way).");
+            .asList(MULTIFEATURE_INSTRUCTIONS);
 
     @Override
     protected List<String> getFallbackInstructions() {
@@ -134,11 +135,10 @@ public class MultiFeatureRoundaboutCheck extends BaseCheck {
     }
 
     /***
-     * Analyze List of roundabout ids. If all List values contain the full OsmIdentifier value,
+     * Analyze List of roundabout ids. If list contains a single OSM Identifier sectioned into multiple Edges,
      * the roundabout is one Feature (OSM way).
      *
      * For example, OSM Way id: 1270065 can be multiple Edges as [127006500001, 127006500002, 127006500003, 127006500004]
-     * Our helper function stitchRoundaboutEdges will create a Roundabout, not knowing this is a single Way.
      * This function removes these roundabouts from our List of edgeIds.
      *
      * @param osmId
