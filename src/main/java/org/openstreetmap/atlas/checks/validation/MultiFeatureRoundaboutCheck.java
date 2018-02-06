@@ -22,7 +22,7 @@ public class MultiFeatureRoundaboutCheck extends BaseCheck {
 
     // TODO You can use serialver to regenerate the serial UID.
     private static final long serialVersionUID = 1L;
-    public static final String MULTIFEATURE_INSTRUCTIONS = "This is a multi-feature roundabout. Merge roundabout edges to create one feature (OSM Way).";
+    public static final String MULTIFEATURE_INSTRUCTIONS = "This is a multi-feature roundabout: {0}. Merge roundabout edges to create one feature (OSM Way).";
     private static final List<String> FALLBACK_INSTRUCTIONS = Arrays
             .asList(MULTIFEATURE_INSTRUCTIONS);
 
@@ -89,7 +89,7 @@ public class MultiFeatureRoundaboutCheck extends BaseCheck {
             this.markAsFlagged(object.getIdentifier());
             // create flag w/ instructions
             return Optional.of(
-                    this.createFlag(roundaboutEdges, this.getLocalizedInstruction(0)));
+                    this.createFlag(roundaboutEdges, this.getLocalizedInstruction(0, edge.getOsmIdentifier())));
         }
      }
 
