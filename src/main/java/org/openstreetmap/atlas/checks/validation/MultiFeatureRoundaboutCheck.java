@@ -1,14 +1,19 @@
 package org.openstreetmap.atlas.checks.validation;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.openstreetmap.atlas.checks.base.BaseCheck;
 import org.openstreetmap.atlas.checks.flag.CheckFlag;
-import org.openstreetmap.atlas.geography.atlas.items.*;
-import org.openstreetmap.atlas.tags.HighwayTag;
+import org.openstreetmap.atlas.geography.atlas.items.AtlasObject;
+import org.openstreetmap.atlas.geography.atlas.items.Edge;
 import org.openstreetmap.atlas.tags.JunctionTag;
-import org.openstreetmap.atlas.tags.annotations.validation.Validators;
 import org.openstreetmap.atlas.utilities.configuration.Configuration;
 
 /**
@@ -18,7 +23,8 @@ import org.openstreetmap.atlas.utilities.configuration.Configuration;
  *
  * @author danielbaah
  */
-public class MultiFeatureRoundaboutCheck extends BaseCheck {
+public class MultiFeatureRoundaboutCheck extends BaseCheck
+{
 
     // TODO You can use serialver to regenerate the serial UID.
     private static final long serialVersionUID = 1L;
@@ -27,7 +33,8 @@ public class MultiFeatureRoundaboutCheck extends BaseCheck {
             .asList(MULTIFEATURE_INSTRUCTIONS);
 
     @Override
-    protected List<String> getFallbackInstructions() {
+    protected List<String> getFallbackInstructions()
+    {
         return FALLBACK_INSTRUCTIONS;
     }
 
@@ -38,7 +45,8 @@ public class MultiFeatureRoundaboutCheck extends BaseCheck {
      *
      * @param configuration the JSON configuration for this check
      */
-    public MultiFeatureRoundaboutCheck(final Configuration configuration) {
+    public MultiFeatureRoundaboutCheck(final Configuration configuration)
+    {
         super(configuration);
     }
 
@@ -49,7 +57,8 @@ public class MultiFeatureRoundaboutCheck extends BaseCheck {
      * @return {@code true} if this object should be checked
      */
     @Override
-    public boolean validCheckForObject(final AtlasObject object) {
+    public boolean validCheckForObject(final AtlasObject object)
+    {
 
         // object must be an edge
         return object instanceof Edge
@@ -102,13 +111,14 @@ public class MultiFeatureRoundaboutCheck extends BaseCheck {
      * @param roundaboutEdges
      *      list of Edge's in a single roundabout
      */
-    private void stitchRoundaboutEdges(Edge edge, Set<Edge> roundaboutEdges, List<Long> edgeIds) {
-        Iterator<Edge> r = edge.connectedEdges().iterator();
+    private void stitchRoundaboutEdges(final Edge edge, final Set<Edge> roundaboutEdges, final List<Long> edgeIds)
+    {
+        final Iterator<Edge> iterator = edge.connectedEdges().iterator();
 
         // iterate through connectedEdges
-        while (r.hasNext())
+        while (iterator.hasNext())
         {
-            final Edge connectedEdge = r.next();
+            final Edge connectedEdge = iterator.next();
             final Long uniqueId = connectedEdge.getIdentifier();
 
             // grab all edges with roundabout tag
@@ -148,8 +158,9 @@ public class MultiFeatureRoundaboutCheck extends BaseCheck {
      * @return {@code true} if roundabout is a single feature, otherwise {@code false}
      *
      */
-    private boolean isSingleFeature(String osmId, List<Long> edgeIds){
-        List matches = edgeIds
+    private boolean isSingleFeature(final String osmId, final List<Long> edgeIds)
+    {
+        final List matches = edgeIds
                 .stream()
                 // returns true is roundabout Id contains full osmId value
                 .filter(id -> Long.toString(id).contains(osmId))

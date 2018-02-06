@@ -26,28 +26,32 @@ public class MultiFeatureRoundaboutCheckTest {
     public ConsumerBasedExpectedCheckVerifier verifier = new ConsumerBasedExpectedCheckVerifier();
 
     @Test
-    public void testValidSectionedWayRoundabout() {
+    public void testValidSectionedWayRoundabout()
+    {
         this.verifier.actual(this.setup.validSectionedWayRoundabout(),
                 new MultiFeatureRoundaboutCheck(ConfigurationResolver.emptyConfiguration()));
         this.verifier.verifyEmpty();
     }
 
     @Test
-    public void testNonRoundaboutTag() {
+    public void testNonRoundaboutTag()
+    {
         this.verifier.actual(this.setup.missingRoundaboutTag(),
                 new MultiFeatureRoundaboutCheck(ConfigurationResolver.emptyConfiguration()));
         this.verifier.verifyEmpty();
     }
 
     @Test
-    public void testSingleFeatureRoundabout() {
+    public void testSingleFeatureRoundabout()
+    {
         this.verifier.actual(this.setup.validSingleFeatureRoundabout(),
                 new MultiFeatureRoundaboutCheck(ConfigurationResolver.emptyConfiguration()));
         this.verifier.verifyEmpty();
     }
 
     @Test
-    public void testInvalidMultiFeatureRoundabout() {
+    public void testInvalidMultiFeatureRoundabout()
+    {
         this.verifier.actual(this.setup.invalidMultiFeatureRoundabout(),
                 new MultiFeatureRoundaboutCheck(ConfigurationResolver.emptyConfiguration()));
         this.verifier.verify(flag ->
