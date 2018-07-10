@@ -107,30 +107,31 @@ public class UnusualLayerTagsCheck extends BaseCheck<Long>
     protected Optional<CheckFlag> flag(final AtlasObject object)
     {
         // Retrieve layer tag value and evaluate it
-        final Optional<Long> layerTagValue = LayerTag.getTaggedOrImpliedValue(object, 0L);
-        final boolean isTagValueValid = layerTagValue.isPresent();
+        final Optional<Long> layerTag = LayerTag.getTaggedValue(object);
+        final boolean isTagValueValid = layerTag.isPresent();
+        final Long layerTagValue = layerTag.orElse(0L);
 
         // mark osm id as flagged
         this.markAsFlagged(object.getOsmIdentifier());
 
         // Rule: tunnel edges must have a layer tag value in [-5, -1]
         if (TunnelTag.isTunnel(object)
-                && (!isTagValueValid || layerTagValue.get() > TUNNEL_LAYER_TAG_MAX_VALUE
-                        || layerTagValue.get() < TUNNEL_LAYER_TAG_MIN_VALUE))
+                && (!isTagValueValid || layerTagValue > TUNNEL_LAYER_TAG_MAX_VALUE
+                        || layerTagValue < TUNNEL_LAYER_TAG_MIN_VALUE))
         {
             return Optional.of(createFlag(object, this.getLocalizedInstruction(0)));
         }
 
         // Rule: bridge edges must have no layer tag or a layer tag value in [1, 5]
-        if (BridgeTag.isBridge(object) && (!isTagValueValid || layerTagValue.get() != 0)
-                && (!isTagValueValid || layerTagValue.get() > BRIDGE_LAYER_TAG_MAX_VALUE
-                        || layerTagValue.get() < BRIDGE_LAYER_TAG_MIN_VALUE))
+        if (BridgeTag.isBridge(object) && (!isTagValueValid || layerTagValue != 0)
+                && (!isTagValueValid || layerTagValue > BRIDGE_LAYER_TAG_MAX_VALUE
+                        || layerTagValue < BRIDGE_LAYER_TAG_MIN_VALUE))
         {
             return Optional.of(createFlag(object, this.getLocalizedInstruction(2)));
         }
 
         // Rule: Junction edges with valid layer must include bridge or tunnel tag
-        if (JunctionTag.isRoundabout(object) && (isTagValueValid && layerTagValue.get() != 0L)
+        if (JunctionTag.isRoundabout(object) && (isTagValueValid && layerTagValue != 0L)
                 && !(TunnelTag.isTunnel(object) || BridgeTag.isBridge(object)))
         {
             return Optional.of(createFlag(object, this.getLocalizedInstruction(1)));
