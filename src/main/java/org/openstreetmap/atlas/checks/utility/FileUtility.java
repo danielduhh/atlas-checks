@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 
@@ -19,9 +20,6 @@ import org.openstreetmap.atlas.streaming.resource.File;
 public final class FileUtility
 {
 
-    private static final String LOG_EXTENSION = "log";
-    private static final String ZIPPED_LOG_EXTENSION = ".log.gz";
-
     /**
      * An enum containing the different types of input files that we can handle.
      */
@@ -30,6 +28,9 @@ public final class FileUtility
         LOG,
         COMPRESSED_LOG
     }
+    
+    private static final String LOG_EXTENSION = "log";
+    private static final String ZIPPED_LOG_EXTENSION = ".log.gz";
 
     /**
      * Determine whether or not this file is something we can handle, and classify it accordingly.
@@ -72,10 +73,11 @@ public final class FileUtility
     {
         if (fileType == LogOutputFileType.LOG)
         {
-            return new BufferedReader(new FileReader(inputFile.getPath()));
+            return new BufferedReader(new FileReader(inputFile.getPath(), StandardCharsets.UTF_8));
         }
         return new BufferedReader(new InputStreamReader(
-                new GZIPInputStream(new FileInputStream(inputFile.getPath()))));
+                new GZIPInputStream(new FileInputStream(inputFile.getPath())),
+                StandardCharsets.UTF_8));
     }
 
     private FileUtility()
