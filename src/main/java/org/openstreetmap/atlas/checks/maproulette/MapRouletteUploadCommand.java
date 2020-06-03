@@ -118,7 +118,7 @@ public class MapRouletteUploadCommand extends MapRouletteCommand
             {
                 try (BufferedReader reader = FileUtility.getReader(logFile, logOutputFileType))
                 {
-                    reader.lines().forEach(line ->
+                    reader.lines().filter(line-> line.length() > 0).forEach(line ->
                     {
                         // Get Task from geojson
                         final Task task = gson.fromJson(line, Task.class);
@@ -218,13 +218,8 @@ public class MapRouletteUploadCommand extends MapRouletteCommand
         // If the element has properties
         if (elementJson.has(PROPERTIES))
         {
-            final JsonObject properties = elementJson.get(PROPERTIES).getAsJsonObject();
-            // And the properties have a country code
-            if (properties.has(ISOCountryTag.KEY))
-            {
-                // Get the country code
-                return Optional.of(properties.get(ISOCountryTag.KEY).getAsString());
-            }
+            // Get the country code
+            return Optional.of("");
         }
         return Optional.empty();
     }

@@ -12,6 +12,7 @@ import org.openstreetmap.atlas.checks.utility.tags.SyntheticHighlightPointTag;
 import org.openstreetmap.atlas.geography.Latitude;
 import org.openstreetmap.atlas.geography.Location;
 import org.openstreetmap.atlas.geography.Longitude;
+import org.openstreetmap.atlas.tags.ISOCountryTag;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
@@ -72,8 +73,16 @@ public class TaskDeserializer implements JsonDeserializer<Task>
      */
     private JsonArray filterOutPointsFromGeojson(final JsonArray features)
     {
-        return this.objectStream(features).filter(feature -> feature.has(PROPERTIES)
+        return this.objectStream(features)
+                .filter(feature -> feature.has(PROPERTIES)
                 && !feature.get(PROPERTIES).getAsJsonObject().has(SyntheticHighlightPointTag.KEY))
+                .map(feature -> {
+                    if (feature.get(PROPERTIES).getAsJsonObject().has(ISOCountryTag.KEY))
+                    {
+                        feature.get(PROPERTIES).getAsJsonObject().remove(ISOCountryTag.KEY);
+                    }
+                    return feature;
+                })
                 .collect(JsonArray::new, JsonArray::add, JsonArray::addAll);
     }
 

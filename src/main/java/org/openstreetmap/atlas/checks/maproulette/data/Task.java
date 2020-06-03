@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.codec.binary.StringUtils;
 import org.openstreetmap.atlas.exception.CoreException;
 import org.openstreetmap.atlas.geography.Location;
+import org.openstreetmap.atlas.tags.ISOCountryTag;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -213,6 +214,7 @@ public class Task
         {
             final JsonObject propertiesField = (JsonObject) json.get(0).getAsJsonObject()
                     .get(TASK_FEATURE_PROPERTIES);
+            propertiesField.remove(ISOCountryTag.KEY);
             propertiesField.add(CHECK_GENERATOR, new JsonPrimitive(this.challengeName));
             propertiesField.add(FRAMEWORK_GENERATOR, new JsonPrimitive(FRAMEWORK));
             json.forEach(features::add);
