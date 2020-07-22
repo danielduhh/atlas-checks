@@ -51,6 +51,26 @@
       "difficulty": "HARD"
     }
   },
+  "ApproximateWayCheck": {
+    "deviation": {
+      "minimum.meters": 10.0,
+      "ratio": {
+        "max": 0.12
+      }
+    },
+    "angle": {
+      "max": 140.0,
+      "min": 60.0
+    },
+    "bezierStep": 0.01,
+    "highway.minimum": "secondary",
+    "challenge": {
+      "description": "Tasks contain ways that are crudely drawn.",
+      "blurb": "Crudely drawn ways",
+      "instructions": "Improve the accuracy of the way by adding more nodes and/or readjusting existing nodes to better match the actual road",
+      "difficulty": "EASY"
+    }
+  },
   "AreasWithHighwayTagCheck":{
     "tag.filters":"highway->*&area->yes",
     "challenge":{
@@ -722,6 +742,20 @@
       "difficulty": "NORMAL"
     }
   },
+  "RoundaboutMissingTagCheck": {
+    "angle.threshold": {
+      "maximum_degree": 40.0,
+      "minimum_degree": 10.0
+    },
+    "challenge": {
+      "description": "This check is to look for suspicious circular junctions that may be roundabout without the “junction=roundabout” tag.",
+      "blurb": "Modify roundabouts such that they have proper tagging.",
+      "instruction": "Open your favorite editor and add junction=roundabout tag.",
+      "difficulty": "NORMAL",
+      "defaultPriority": "LOW",
+      "tags":"highway"
+    }
+  },
   "SelfIntersectingPolylineCheck": {
     "tags.filter":"highway->*&highway->!construction&highway->!footway&highway->!path|building->*",
     "minimum.highway.type":"service",
@@ -1014,6 +1048,15 @@
       "blurb": "Edit features overlapping the ocean feature so they either validly intersect or do not overlap.",
       "instruction": "Open your favorite editor and edit the features overlapping the ocean so they either validly overlap or do not overlap.",
       "difficulty": "EASY"
+    }
+  },
+  "ConditionalRestrictionCheck": {
+    "challenge": {
+      "description": "The conditional restriction tag and value should follow a predefined scheme",
+      "blurb": "Improper conditional restriction tags",
+      "instruction": "Open your favorite editor and check the instruction for the task and then update the conditional tag to the appropriate scheme.",
+      "difficulty": "EASY",
+      "defaultPriority": "MEDIUM"
     }
   }
 }
