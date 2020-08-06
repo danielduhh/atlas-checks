@@ -1,0 +1,10 @@
+jobs:
+  - name: shardedintegritycheckssparkjob
+    jobClass: 'org.openstreetmap.atlas.generator.tools.spark.PieSparkJobWrapper'
+    sparkVersion: 2.4.4-jdk11
+    properties:
+      spark.pie.job.stop.on.deployment: false
+    logging:
+        splunkCluster: geo
+        splunkIndexName: maps-osm
+        splunkSourceType: kv
