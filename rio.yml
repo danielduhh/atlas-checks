@@ -42,7 +42,12 @@ builds:
       template: buildozer:v4:publish
     trigger:
       gitPush: false
-    publish:
+    package:
+      libraries:
+        - publish:
+            - repo: m2:maps
       release: true
-      libraries: true
-
+    finally:
+      tag:
+        enabled: true
+        expression: $(cat gradle.properties | grep -oP 'version=\K.+')
