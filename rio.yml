@@ -4,11 +4,6 @@ machine:
     version: 11-openjdk
   env:
     RUNTIME_JDK_VERSION: 11-openjdk
-publish:
-  libraries:
-    repo: m2:oss-patched
-  reports:
-    junit: true
 
 builds:
   - branchName: apple
