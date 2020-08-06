@@ -14,27 +14,37 @@ builds:
   - branchName: apple
     name: apple-prb
     build:
-      template: buildozer:v1:prb
+      template: buildozer:v4:prb
+    machine:
+      env:
+        RUNTIME_JDK_VERSION: 11
+        skipIntegrationTest: true
 
   - branchName: apple
     name: apple-release
     build:
-      template: buildozer:v1:publish
+      template: buildozer:v4:publish
     trigger:
       gitPush: false
-    publish:
+    package:
+      libraries:
+        - publish:
+            - repo: m2:maps
       release: true
-      libraries: true
+    finally:
+      tag:
+        enabled: true
+        expression: $(cat gradle.properties | grep -oP 'version=\K.+')
 
   - branchName: hotfix
     name: hotfix-prb
     build:
-      template: buildozer:v1:prb
+      template: buildozer:v4:prb
 
   - branchName: hotfix
     name: hotfix-release
     build:
-      template: buildozer:v1:publish
+      template: buildozer:v4:publish
     trigger:
       gitPush: false
     publish:
