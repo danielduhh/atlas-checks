@@ -115,6 +115,7 @@ configurations
             // of Spark brought in by atlas generator
             force 'com.fasterxml.jackson.core:jackson-core:2.6.7'
             force 'com.fasterxml.jackson.core:jackson-databind:2.6.7'
+            force packages.deployment
         }
     }
     compile
@@ -161,6 +162,7 @@ dependencies
     compile packages.postgres
     compile packages.spring
     compile packages.mockito
+    compile packages.deployment
 
     checkstyle packages.checkstyle
     checkstyle packages.atlas_checkstyle
