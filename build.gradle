@@ -115,6 +115,7 @@ configurations
             // of Spark brought in by atlas generator
             force 'com.fasterxml.jackson.core:jackson-core:2.6.7'
             force 'com.fasterxml.jackson.core:jackson-databind:2.6.7'
+            force packages.deployment
         }
     }
     compile
@@ -144,7 +145,6 @@ configurations
         exclude group: 'org.apache.hadoop'
         exclude group: 'org.apache.spark'
         exclude group: 'org.scala-lang'
-        exclude group: 'org.slf4j'
     }
     runtime
     archives
@@ -161,6 +161,7 @@ dependencies
     compile packages.postgres
     compile packages.spring
     compile packages.mockito
+    compile packages.deployment
 
     checkstyle packages.checkstyle
     checkstyle packages.atlas_checkstyle
