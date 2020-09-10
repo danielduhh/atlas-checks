@@ -11,7 +11,11 @@ import java.util.stream.Collectors;
 
 import org.openstreetmap.atlas.checks.base.BaseCheck;
 import org.openstreetmap.atlas.checks.flag.CheckFlag;
+import org.openstreetmap.atlas.geography.atlas.Atlas;
+import org.openstreetmap.atlas.geography.atlas.change.FeatureChange;
+import org.openstreetmap.atlas.geography.atlas.complete.CompleteEntity;
 import org.openstreetmap.atlas.geography.atlas.items.Area;
+import org.openstreetmap.atlas.geography.atlas.items.AtlasEntity;
 import org.openstreetmap.atlas.geography.atlas.items.AtlasObject;
 import org.openstreetmap.atlas.geography.atlas.items.Edge;
 import org.openstreetmap.atlas.geography.atlas.walker.EdgeWalker;
@@ -67,6 +71,8 @@ public class AreasWithHighwayTagCheck extends BaseCheck<Long>
     @Override
     protected Optional<CheckFlag> flag(final AtlasObject object)
     {
+        Atlas atlas = object.getAtlas();
+
         return HighwayTag.highwayTag(object)
                 // If the tag isn't one of the VALID_HIGHWAY_TAGS, we want to flag it.
                 .filter(tag -> isUnacceptableAreaHighwayTagCombination(object, tag)).map(tag ->
@@ -74,6 +80,11 @@ public class AreasWithHighwayTagCheck extends BaseCheck<Long>
                     final String instruction;
                     if (tag.equals(HighwayTag.FOOTWAY))
                     {
+                        CompleteEntity completeEntity = ((CompleteEntity) CompleteEntity.from((AtlasEntity) object))
+                                .withTags(object.getTags())
+                                .withReplacedTag(HighwayTag.KEY, HighwayTag.KEY, HighwayTag.PEDESTRIAN.getTagValue());
+                        FeatureChange change = FeatureChange.add((AtlasEntity) completeEntity, atlas);
+
                         instruction = this.getLocalizedInstruction(0, object.getOsmIdentifier(),
                                 tag, HighwayTag.PEDESTRIAN);
                     }
@@ -81,6 +92,15 @@ public class AreasWithHighwayTagCheck extends BaseCheck<Long>
                     {
                         instruction = this.getLocalizedInstruction(1, object.getOsmIdentifier(),
                                 tag.getTagValue());
+
+                        CompleteEntity completeEntity = ((CompleteEntity) CompleteEntity.shallowFrom((AtlasEntity) object))
+                                .withTags(object.getTags())
+                                .withRemovedTag(AreaTag.KEY);
+
+                        FeatureChange change = FeatureChange.add((AtlasEntity) completeEntity, atlas);
+
+                        System.out.println(change.toPrettyGeoJson());
+
                     }
                     final Set<AtlasObject> results;
                     if (object instanceof Edge)
