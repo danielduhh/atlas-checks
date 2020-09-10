@@ -1,4 +1,5 @@
 project.ext.versions = [
+    deployment: '5.1.2',
     checkstyle: '8.18',
     jacoco: '0.8.3',
     atlas: '6.2.8',
@@ -8,10 +9,11 @@ project.ext.versions = [
     postgis: '2.1.7.2',
     postgres: '42.2.6',
     spring: '4.2.2.RELEASE',
-    mockito: '2.23.0'
+    mockito: '2.23.0',
 ]
 
 project.ext.packages = [
+    deployment: "com.apple.geo.osm:deployment:${versions.deployment}",
     atlas: "org.openstreetmap.atlas:atlas:${versions.atlas}",
     commons: "commons-lang:commons-lang:${versions.commons}",
     atlas_generator: "org.openstreetmap.atlas:atlas-generator:${versions.atlas_generator}",
