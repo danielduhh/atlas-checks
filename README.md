@@ -21,7 +21,7 @@ To run Atlas Checks the following is required:
 
 ### Run Atlas Checks
 To start working with Atlas Checks follow the steps below:
-1. Clone Atlas Checks project using the following command `git clone https://github.com/osmlab/atlas-checks.git`
+1. Clone Atlas Checks pdddroject using the following command `git clone https://github.com/osmlab/atlas-checks.git`
 2. Switch to newly created directory: `cd atlas-checks`
 3. Execute `./gradlew run`
 
