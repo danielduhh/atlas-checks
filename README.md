@@ -1,4 +1,4 @@
-# Atlas Checks
+# Atlas Checks Repo
 
 [![Build Status](https://travis-ci.org/osmlab/atlas-checks.svg?branch=main)](https://travis-ci.org/osmlab/atlas-checks)
 [![quality gate](https://sonarcloud.io/api/project_badges/measure?project=org.openstreetmap.atlas%3Aatlas-checks&metric=alert_status)](https://sonarcloud.io/dashboard?id=org.openstreetmap.atlas%3Aatlas-checks)
